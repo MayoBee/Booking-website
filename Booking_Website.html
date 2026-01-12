@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlanGetaway | Premium Sarangani Beach Bookings</title>
+    <style>
+        /* --- 1. CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --danger: #ef4444;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- 2. LAYOUT UTILITIES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-block { width: 100%; }
+
+        /* --- 3. HEADER & HERO --- */
+        header {
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); }
+        .logo span { color: var(--primary); }
+
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.6)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.25rem; max-width: 600px; margin: 0 auto; opacity: 0.9; }
+
+        /* --- 4. SEARCH & FILTERS --- */
+        .search-interface {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-top: -80px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+            position: relative;
+            z-index: 10;
+        }
+
+        .input-group label { display: block; font-size: 0.875rem; color: var(--text-light); margin-bottom: 8px; font-weight: 600; }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        /* --- 5. LISTINGS GRID --- */
+        .section-title { font-size: 2rem; margin: 40px 0 20px; color: var(--secondary); }
+        
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+
+        .card-img {
+            height: 220px;
+            background-color: #cbd5e1;
+            position: relative;
+        }
+        
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--surface);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.25rem; margin-bottom: 5px; color: var(--secondary); }
+        .card-location { font-size: 0.875rem; color: var(--text-light); margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
+        
+        .card-features { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .feature-tag { background: #e0f2fe; color: var(--primary-dark); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .price { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .price span { font-size: 0.875rem; color: var(--text-light); font-weight: 400; }
+
+        /* --- 6. MODAL SYSTEM --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius);
+            padding: 30px;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal { transform: translateY(0); }
+
+        .booking-summary {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+        .summary-total { border-top: 1px solid #cbd5e1; padding-top: 10px; font-weight: 700; font-size: 1.1rem; margin-top: 10px; }
+
+        /* --- 7. NOTIFICATIONS --- */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transform: translateY(100px);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+        .toast.show { transform: translateY(0); }
+
+        /* Loaders */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+            display: none;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .search-interface { margin-top: 0; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Glan<span>Getaway</span></div>
+                <div>
+                    <button class="btn btn-outline">My Bookings</button>
+                    <button class="btn btn-primary" style="margin-left: 10px;">Sign In</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Paradise in Sarangani</h1>
+            <p>Experience the white sands of Gumasa and the serenity of Glan. Book the finest resorts instantly.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-interface">
+            <div class="input-group">
+                <label>Check-in</label>
+                <input type="date" id="filter-date">
+            </div>
+            <div class="input-group">
+                <label>Guests</label>
+                <select id="filter-guests">
+                    <option value="1">1 Guest</option>
+                    <option value="2" selected>2 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="6">6+ Guests</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Resort Type</label>
+                <select id="filter-type">
+                    <option value="all">All Resorts</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="budget">Budget-Friendly</option>
+                    <option value="private">Private Villa</option>
+                </select>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="app.filterListings()">Search Availability</button>
+        </div>
+
+        <h2 class="section-title">Available Stays in Glan</h2>
+        
+        <div id="loader" class="loader"></div>
+
+        <div id="listings-container" class="listings-grid">
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="booking-modal">
+        <div class="modal">
+            <h2 id="modal-title" style="margin-bottom: 20px;">Confirm Booking</h2>
+            
+            <form id="booking-form">
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Full Name</label>
+                    <input type="text" required placeholder="John Doe">
+                </div>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Email Address</label>
+                    <input type="email" required placeholder="john@example.com">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="input-group">
+                        <label>Check-in</label>
+                        <input type="date" id="modal-checkin" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Check-out</label>
+                        <input type="date" id="modal-checkout" required>
+                    </div>
+                </div>
+
+                <div class="booking-summary">
+                    <div class="summary-row">
+                        <span>Rate per night</span>
+                        <span id="summary-rate">₱0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Nights</span>
+                        <span id="summary-nights">0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Service Fee</span>
+                        <span>₱250</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total Due</span>
+                        <span id="summary-total" style="color: var(--primary);">₱0</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-outline btn-block" onclick="app.closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-block">Confirm & Pay</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Booking Confirmed! Check your email.</div>
+
+    <footer style="background: var(--secondary); color: white; padding: 50px 0; margin-top: 50px;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2024 GlanGetaway. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. MOCK DATA (Database Simulation) ---
+        const MOCK_DB = [
+            {
+                id: 1,
+                name: "Isla Jardin Del Mar",
+                location: "Gumasa, Glan",
+                type: "luxury",
+                price: 3500,
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["Beachfront", "Restaurant", "WiFi"]
+            },
+            {
+                id: 2,
+                name: "Rosal Beach Resort",
+                location: "Gumasa, Glan",
+                type: "budget",
+                price: 1500,
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["Cottages", "Grilling Area"]
+            },
+            {
+                id: 3,
+                name: "Coco Beach Villa",
+                location: "Burias, Glan",
+                type: "private",
+                price: 8000,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["Private Pool", "Kitchen", "3 Bedrooms"]
+            },
+            {
+                id: 4,
+                name: "White Haven Lodge",
+                location: "Gumasa, Glan",
+                type: "luxury",
+                price: 4200,
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["AC Rooms", "Bar", "Pool"]
+            },
+            {
+                id: 5,
+                name: "Sunset Cove",
+                location: "Baliton, Glan",
+                type: "budget",
+                price: 1200,
+                rating: 4.3,
+                image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["Tent Pitching", "Open Cottage"]
+            },
+            {
+                id: 6,
+                name: "Kapatan Glan View",
+                location: "Kapatan, Glan",
+                type: "private",
+                price: 6500,
+                rating: 4.6,
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                features: ["Cliff View", "Infinity Pool"]
+            }
+        ];
+
+        // --- 2. APPLICATION CONTROLLER CLASS ---
+        class BookingApp {
+            constructor() {
+                this.listings = [];
+                this.currentBooking = null;
+                
+                // DOM Elements
+                this.container = document.getElementById('listings-container');
+                this.loader = document.getElementById('loader');
+                this.modal = document.getElementById('booking-modal');
+                
+                // Bind methods
+                this.init();
+            }
+
+            async init() {
+                this.showLoader(true);
+                // Simulate API Call delay
+                await new Promise(r => setTimeout(r, 1200)); 
+                this.listings = MOCK_DB;
+                this.renderListings(this.listings);
+                this.showLoader(false);
+                
+                this.setupEventListeners();
+                this.setDefaultDates();
+            }
+
+            // --- RENDER LOGIC ---
+            renderListings(data) {
+                this.container.innerHTML = '';
+                
+                if(data.length === 0) {
+                    this.container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                        <h3>No resorts found matching your criteria.</h3>
+                    </div>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // Format features HTML
+                    const featuresHtml = item.features.map(f => `<span class="feature-tag">${f}</span>`).join('');
+                    
+                    card.innerHTML = `
+                        <div class="card-img">
+                            <img src="${item.image}" alt="${item.name}">
+                            <div class="badge">⭐ ${item.rating}</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-location">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                                ${item.location}
+                            </div>
+                            <h3 class="card-title">${item.name}</h3>
+                            <div class="card-features">${featuresHtml}</div>
+                            <div class="card-footer">
+                                <div class="price">₱${item.price.toLocaleString()} <span>/ night</span></div>
+                                <button class="btn btn-primary" onclick="app.openModal(${item.id})">Book Now</button>
+                            </div>
+                        </div>
+                    `;
+                    this.container.appendChild(card);
+                });
+            }
+
+            // --- FILTERING LOGIC ---
+            filterListings() {
+                this.showLoader(true);
+                this.container.innerHTML = '';
+                
+                const type = document.getElementById('filter-type').value;
+                // Note: Date/Guest logic would typically query backend availability
+                // Here we just filter by 'type' for demo purposes
+                
+                setTimeout(() => {
+                    const filtered = this.listings.filter(item => {
+                        return type === 'all' ? true : item.type === type;
+                    });
+                    this.renderListings(filtered);
+                    this.showLoader(false);
+                }, 600);
+            }
+
+            // --- MODAL & CALCULATION LOGIC ---
+            openModal(id) {
+                const item = this.listings.find(i => i.id === id);
+                this.currentBooking = item;
+                
+                document.getElementById('modal-title').innerText = `Book ${item.name}`;
+                document.getElementById('summary-rate').innerText = `₱${item.price.toLocaleString()}`;
+                
+                // Initialize Calculation
+                this.calculateTotal();
+                
+                this.modal.classList.add('active');
+            }
+
+            closeModal() {
+                this.modal.classList.remove('active');
+                this.currentBooking = null;
+            }
+
+            calculateTotal() {
+                if(!this.currentBooking) return;
+
+                const checkin = new Date(document.getElementById('modal-checkin').value);
+                const checkout = new Date(document.getElementById('modal-checkout').value);
+                
+                // Validate dates
+                if (checkout <= checkin) {
+                    document.getElementById('summary-nights').innerText = "Invalid Dates";
+                    document.getElementById('summary-total').innerText = "---";
+                    return;
+                }
+
+                const diffTime = Math.abs(checkout - checkin);
+                const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                const subtotal = nights * this.currentBooking.price;
+                const total = subtotal + 250; // + Service Fee
+
+                document.getElementById('summary-nights').innerText = nights;
+                document.getElementById('summary-total').innerText = `₱${total.toLocaleString()}`;
+            }
+
+            // --- UTILITIES ---
+            showLoader(visible) {
+                this.loader.style.display = visible ? 'block' : 'none';
+            }
+
+            setDefaultDates() {
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const dayAfter = new Date(today);
+                dayAfter.setDate(dayAfter.getDate() + 2);
+
+                document.getElementById('filter-date').valueAsDate = today;
+                document.getElementById('modal-checkin').valueAsDate = tomorrow;
+                document.getElementById('modal-checkout').valueAsDate = dayAfter;
+            }
+
+            setupEventListeners() {
+                // Recalculate price when dates change in modal
+                document.getElementById('modal-checkin').addEventListener('change', () => this.calculateTotal());
+                document.getElementById('modal-checkout').addEventListener('change', () => this.calculateTotal());
+
+                // Handle Form Submission
+                document.getElementById('booking-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Simulate processing
+                    const btn = e.target.querySelector('button[type="submit"]');
+                    const originalText = btn.innerText;
+                    btn.innerText = "Processing...";
+                    btn.disabled = true;
+
+                    setTimeout(() => {
+                        this.closeModal();
+                        this.showToast();
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        e.target.reset();
+                        this.setDefaultDates();
+                    }, 1500);
+                });
+            }
+
+            showToast() {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+
+        // Initialize App
+        const app = new BookingApp();
+
+    </script>
+</body>
+</html>
